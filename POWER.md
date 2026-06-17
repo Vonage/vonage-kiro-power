@@ -155,3 +155,12 @@ Ask: *"Show me a Node.js example for sending an SMS"* or *"What is an NCCO?"*
 - [API Reference](https://developer.vonage.com/api)
 - [Vonage API Status](https://vonageapi.statuspage.io/)
 - [Private Key Encoder](https://mylight.work/private-key-to-environment-variable)
+
+## License and support
+
+This power itself is covered by the [Apache-2.0](LICENSE) license.
+
+This power integrates with [Vonage API MCP server](https://github.com/Vonage-Community/vonage-mcp-server-api-bindings) (Apache-2.0), and [Vonage Documentation MCP server](https://github.com/Vonage/vonage-mcp-server-documentation) (Apache-2.0).
+
+- [Privacy Policy](https://www.vonage.com/legal/privacy-policy/)
+- [Support](https://www.vonage.com/support/)
