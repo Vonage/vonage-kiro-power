@@ -75,40 +75,22 @@ The plugin follows the Agent Plugins 1.0.0 layout:
    git clone https://github.com/Vonage/vonage-kiro-power.git
    ```
 
-2. Install the plugin in your agent client from the cloned folder. Your client discovers the skills in `skills/` and the MCP servers in `mcp.json`. For example, in Kiro, open the Powers panel, add a custom power, and choose **Import power from a folder** (pick the cloned folder) or **Import power from GitHub** (paste the repository URL). See [Install powers](https://kiro.dev/docs/powers/installation/) for the current steps.
+2. Install the plugin in your agent client from the cloned folder. Your client discovers the skills in `skills/` and the MCP servers in `mcp.json`. 
 
-3. Add your Vonage credentials to the plugin's `.env` file, which sits directly inside the plugin data directory:
+   - For example, in Kiro, open the Powers panel, add a custom power, and choose **Import power from a folder** (pick the cloned folder) or **Import power from GitHub** (paste the repository URL). See [Install powers](https://kiro.dev/docs/powers/installation/) for the current steps.
+
+3. Add your Vonage credentials to the plugin's `.env` file, which sits directly inside the plugin data directory. The plugin data is stored in `${PLUGIN_DATA}` (**neither** in your project root, **nor** in the plugin install folder). For example, in Kiro it is `~/.kiro/powers/data/vonage-kiro-power/.env` and in VS Code with Copilot it is `~/.copilot/plugin-data/_direct/<<HASH_VALUE>>/.env`:
 
    ```text
    VONAGE_API_KEY=your_api_key_here
    VONAGE_API_SECRET=your_api_secret_here
    ```
 
-   Find both values at [Vonage Dashboard → API Settings](https://dashboard.nexmo.com/settings). See [Configuration](#configuration) for where the file is in your client and for the full list of variables.
+   For a template, see `.env.example`. Find both values at [Vonage Dashboard → API Settings](https://dashboard.nexmo.com/settings). See [Configuration](#configuration) for where the file is in your client and for the full list of variables.
 
 4. Restart your agent client so the `vonage-api` server starts with the new values.
 
-> **Credentials not set?** When you trigger a workflow, the skills detect missing credentials and walk you through the setup before proceeding.
-
 ---
-
-## Configuration
-
-Set the following environment variables in the plugin's `.env` file, one `NAME=value` per line. The `vonage-api` server loads that file when your agent client starts the server, so restart the client after every change.
-
-The file is `.env` directly inside the plugin data directory: a folder your agent client creates for this plugin, keeps across plugin updates, and passes to the server as `PLUGIN_DATA` (see [Agent Plugins §9.1](https://github.com/agentplugins/agent-plugins-spec/blob/main/spec/1.0.0.md#91-subprocess-environment)). `mcp.json` points the server at `${PLUGIN_DATA}/.env` and holds no credentials. Check your client's documentation for where it keeps plugin data. For example, Kiro uses:
-
-```text
-~/.kiro/powers/data/vonage-kiro-power/.env
-```
-
-Kiro names that folder after the installed power, which is the name of the folder you installed from, or the repository name for a GitHub install. If your clone is in a folder with a different name, use that name. On Windows, the Kiro path is `%USERPROFILE%\.kiro\powers\data\vonage-kiro-power\.env`. On macOS and Linux, restrict the file to your user with `chmod 600`.
-
-> **Project `.env` files are not loaded.** The `vonage-api` server reads only the plugin's `.env` file. It does not load a `.env` file in your project root.
->
-> **Already-set variables win.** If a Vonage variable is already set in the environment your agent client starts the `vonage-api` server with, the server keeps that value and ignores the same variable in the plugin's `.env` file.
->
-> **Credential check still failing?** Some agent clients do not expand `${PLUGIN_DATA}` yet. See [If the recovery message still appears](#if-the-recovery-message-still-appears).
 
 ### Required for all workflows
 
@@ -134,45 +116,13 @@ Kiro names that folder after the installed power, which is the name of the folde
 
 ---
 
-## Migrating from the Kiro power
+### Common issues
 
-The Kiro power received your credentials from variables exported before you launched Kiro, through `${VAR}` placeholders in its `mcp.json`. The plugin reads them from its own `.env` file instead. These steps move your existing values into that file. The paths assume Kiro and a clone in the default `vonage-kiro-power` folder. In another agent client, use its plugin data directory.
+#### PLUGIN_DATA expansion
 
-1. Find your current Vonage values: your `.env` file, your shell exports, or the `env` block of `power-vonage-kiro-power-vonage-api` under `powers.mcpServers` in `~/.kiro/settings/mcp.json`. Do this first, because uninstalling the Kiro power removes that settings entry.
+If you completed the steps above and the skill still shows "Your Vonage credentials are not configured yet", your agent client probably does not expand `${PLUGIN_DATA}` yet (for example, VS Code builds affected by [microsoft/vscode#335006](https://github.com/microsoft/vscode/issues/335006)). The server then looks for a file at the literal path `${PLUGIN_DATA}/.env`, finds nothing, and the credential check fails. To work around it:
 
-2. Create the plugin data directory if it does not exist:
-
-   ```bash
-   mkdir -p ~/.kiro/powers/data/vonage-kiro-power
-   ```
-
-3. Copy your existing `.env` file that holds the Vonage variables to the plugin's `.env` location:
-
-   ```bash
-   cp /path/to/your/.env ~/.kiro/powers/data/vonage-kiro-power/.env
-   ```
-
-   If that file also holds unrelated settings, keep only the Vonage lines. If your values were not in a `.env` file, create this file with one `NAME=value` line per variable from [Configuration](#configuration).
-
-4. Restrict the file to your user:
-
-   ```bash
-   chmod 600 ~/.kiro/powers/data/vonage-kiro-power/.env
-   ```
-
-5. In Kiro's Powers panel, uninstall the Vonage power. Then install the plugin from your clone as described in [Installation](#installation) steps 1 and 2. Kiro skips an install whose name is already installed, and both use the name `vonage-kiro-power`.
-
-6. Restart Kiro.
-
-7. Verify the migration: ask your agent to "Set up Vonage" to run the `get-started` skill. Confirm that the credential check (`get-balance`) succeeds and that the skill moves on without showing "Your Vonage credentials are not configured yet."
-
-> **Old exports still win.** Vonage variables that you exported before launching Kiro for the Kiro power, including variables you approved in Kiro, are still in the environment Kiro starts the `vonage-api` server with. They take precedence over the same variables in the plugin's `.env` file. Unset them and restart Kiro if you want the file to be the only source.
-
-### If the recovery message still appears
-
-If you completed the steps above and the skill still shows "Your Vonage credentials are not configured yet", check two things first: the folder name in the path matches the installed power's name (see [Configuration](#configuration)), and no old export overrides the file. If both are fine, your agent client probably does not expand `${PLUGIN_DATA}` yet (for example, VS Code builds affected by microsoft/vscode#335006). The server then looks for a file at the literal path `${PLUGIN_DATA}/.env`, finds nothing, and the credential check fails. To work around it:
-
-1. Keep the plugin's `.env` file in place, so it takes over once your client supports `${PLUGIN_DATA}`.
+1. Keep the plugin's `.env` file in place, so it takes over once your client supports `${PLUGIN_DATA}` (see [Agent Plugins §9.1](https://github.com/agentplugins/agent-plugins-spec/blob/main/spec/1.0.0.md#91-subprocess-environment)).
 2. Export the variables from that file in a shell, then start your agent client from that shell, for example with its command-line launcher:
 
    ```bash
