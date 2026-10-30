@@ -16,7 +16,7 @@ assignees: ''
 
 ## Steps to reproduce
 
-1. Open Kiro with this Power installed
+1. Open your agent client with this plugin installed
 2. Enter the prompt: `...`
 3. ...
 
@@ -24,14 +24,14 @@ assignees: ''
 
 | Field | Value |
 |---|---|
-| Kiro version | |
+| Agent client and version | |
 | Operating system | |
 | Node.js version (`node --version`) | |
 
 ## Error output
 
-<!-- Paste any error messages from Kiro or the MCP server. -->
+<!-- Paste any error messages from your agent client or the MCP server. -->
 
-```
+```text
 (paste here)
 ```

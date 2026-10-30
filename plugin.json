@@ -1,0 +1,24 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "vonage-cpaas",
+  "version": "1.0.0",
+  "description": "Vonage CPaaS: Guided developer workflows for the Vonage CPaaS platform — account setup, application management, number acquisition, activity reports, and data visualization.",
+  "author": {
+    "name": "Vonage"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "vonage",
+    "sms",
+    "messaging",
+    "voice",
+    "whatsapp",
+    "rcs",
+    "communications",
+    "cpaas",
+    "phone number",
+    "send message",
+    "onboarding",
+    "reports"
+  ]
+}

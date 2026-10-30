@@ -1,6 +1,21 @@
-# Reports and Monitoring — Steering Guide
+---
+name: reports-monitoring
+description: 'Vonage CPaaS reports and monitoring. Pulls message and call activity records for a date range of up to 30 days, visualizes report data as charts, and checks the account balance with an optional low-balance warning. Use when the user says "Show my reports", "Check message delivery", "Monitor usage", or "Check my balance".'
+---
+
+# Reports and Monitoring
 
 You are guiding a developer through the Vonage reports and monitoring workflow. Follow these steps in order. Be conversational and provide clear context about what each step retrieves and why.
+
+## Before Step 1: Credential Gate
+
+Before running Step 1 of this workflow, complete the onboarding credential check in [../get-started/references/credential-gate.md](../get-started/references/credential-gate.md): call `get-balance` on the `vonage-api` MCP server. If the call fails, display the recovery message from that file exactly and halt this workflow. Do not continue until the user confirms they have saved the `.env` file in the plugin's data directory and restarted their agent client, then re-run `get-balance` before proceeding.
+
+## Reference Files
+
+- [../get-started/references/credential-gate.md](../get-started/references/credential-gate.md): onboarding credential check and recovery message. Required before Step 1.
+- [../get-started/references/environment-variables.md](../get-started/references/environment-variables.md): every Vonage environment variable, what it is for, and where to find it.
+- [../get-started/references/overview.md](../get-started/references/overview.md): plugin overview, Quick Start, available workflows, tool catalog, Docs MCP Server guidance, useful links, and license and support notices.
 
 ---
 
@@ -36,6 +51,7 @@ Once both are set, call the `get-balance` tool to verify the credentials are val
 Ask the developer for the report parameters:
 
 > What date range would you like to report on? (Maximum span: 30 days)
+>
 > - Start date (YYYY-MM-DD):
 > - End date (YYYY-MM-DD):
 
@@ -44,6 +60,7 @@ If the specified date range exceeds 30 days:
 
 Optionally ask for filters:
 > Would you like to apply any filters? (Press Enter to skip each one)
+>
 > - Channel type (e.g., sms, whatsapp, voice — leave blank for all):
 > - Destination number (E.164 format, e.g., +12015555555 — leave blank for all):
 > - Message status (e.g., delivered, failed — leave blank for all):
@@ -61,6 +78,7 @@ Display a summary of the results, including total record count and a breakdown b
 On success with no results:
 > ℹ️ No records found for the specified date range and filters.
 > Suggestions:
+>
 > - Broaden the date range
 > - Remove or adjust channel type, status, or direction filters
 > - Verify that activity occurred during this period by checking the [Vonage Dashboard → CDR](https://dashboard.nexmo.com/activity-log)
@@ -69,6 +87,7 @@ On success with no results:
 
 If the developer wants to check delivery status for a specific message:
 > To look up a specific message, I can filter by:
+>
 > - **Message UUID** — the unique ID returned when the message was sent
 > - **Destination number** — the recipient's phone number in E.164 format (e.g., +12015555555)
 
@@ -81,6 +100,7 @@ Apply the specified filter and call `get-records-report` again with that filter.
 After retrieving records, offer visualization:
 
 > Would you like me to create a chart from this data? I can visualize:
+>
 > - Message volume over time
 > - Delivery status breakdown
 > - Channel distribution
@@ -123,32 +143,40 @@ If a threshold is provided, compare the current balance against it:
 Apply these patterns when any MCP tool call fails during this workflow.
 
 ### Authentication Error (401)
+
 > ❌ Authentication failed. Verify that `VONAGE_API_KEY` and `VONAGE_API_SECRET` are correct at [Vonage Dashboard → API Settings](https://dashboard.nexmo.com/settings). If using application-level auth, check that `VONAGE_PRIVATE_KEY64` matches `VONAGE_APPLICATION_ID`.
 
 ### Permission Error (403)
+
 > ❌ Permission denied. Check that your account has access to the Reports API. Ensure the required capability is enabled on your Vonage Application at [Vonage Dashboard → Applications](https://dashboard.nexmo.com/applications).
 
 If this error relates to a specific Vonage concept (e.g., "capability not enabled"), query the **Docs MCP Server** for a brief explanation (≤3 sentences) and include the relevant documentation link.
 
 ### Validation Error with Field Detail (400)
+
 Identify the specific field that failed. Display:
 > ❌ Validation failed on field **[field name]**: [error message]. Expected format: [expected format per Vonage API docs].
 
 ### Validation Error without Field Detail (400)
+
 > ❌ The request was invalid: [raw error message]. See the [Vonage Reports API reference](https://developer.vonage.com/api/reports) for the expected request format.
 
 ### Rate Limit (429)
+
 Extract the retry-after value from the response header, or default to 1 second:
 > ⏳ Rate limit reached. Please wait **[retry-after duration]** before retrying. Vonage APIs have per-endpoint rate limits — for details, see the [Vonage API documentation](https://developer.vonage.com/api).
 
 ### Insufficient Funds (402)
+
 Call `get-balance` and display the result, then:
 > ❌ Your account has insufficient funds (current balance: **[balance] [currency]**). Add credit at [Vonage Dashboard → Billing](https://dashboard.nexmo.com/billing-and-payments).
 
 ### Server Error or Timeout (5xx)
+
 > ⚠️ The Vonage platform encountered an error. Please retry after 5 seconds. If the issue persists, check the [Vonage API Status page](https://vonageapi.statuspage.io/).
 
 ### Unknown Error
+
 > ❌ An unexpected error occurred (HTTP [status code]): [error message]. See the relevant [Vonage API documentation](https://developer.vonage.com/api) for more information.
 
 ---
@@ -156,6 +184,7 @@ Call `get-balance` and display the result, then:
 ## Documentation and Contextual Help
 
 When a developer asks about a Vonage concept during this workflow, use the **Docs MCP Server** to retrieve an explanation:
+
 - Query for the concept by name
 - Return no more than 3 sentences explaining it
 - Include a link to the official Vonage documentation page
@@ -163,6 +192,7 @@ When a developer asks about a Vonage concept during this workflow, use the **Doc
 Concepts to handle this way: CDR, delivery receipt, webhook, message UUID, channel, and any other Vonage-specific term.
 
 When a developer asks for code examples:
+
 - Ask for their preferred language if not specified
 - Use the Docs MCP Server to retrieve a language-specific code snippet
 - Do not assume Node.js or any particular SDK

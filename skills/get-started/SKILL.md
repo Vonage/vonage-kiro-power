@@ -1,6 +1,21 @@
-# Get Started with Vonage — Steering Guide
+---
+name: get-started
+description: 'Guided Vonage CPaaS onboarding. Validates Vonage API credentials, creates a Vonage Application with Messages and/or Voice capabilities, and searches for, purchases, and links a phone number to that application. Use when the user says "Set up Vonage", "Get started", "Create a Vonage app", "Buy a number", "Start the Vonage get-started workflow", or "Help me set up Vonage".'
+---
+
+# Get Started with Vonage
 
 You are guiding a developer through the Vonage onboarding workflow. Follow these steps in order. Skip any step whose outcome is already satisfied. Be conversational and clear about what you are doing and why.
+
+## Before Step 1: Credential Gate
+
+Before running Step 1 of this workflow, complete the onboarding credential check in [references/credential-gate.md](references/credential-gate.md): call `get-balance` on the `vonage-api` MCP server. If the call fails, display the recovery message from that file exactly and halt this workflow. Do not continue until the user confirms they have saved the `.env` file in the plugin's data directory and restarted their agent client, then re-run `get-balance` before proceeding.
+
+## Reference Files
+
+- [references/credential-gate.md](references/credential-gate.md): onboarding credential check and recovery message. Required before Step 1.
+- [references/environment-variables.md](references/environment-variables.md): every Vonage environment variable, what it is for, and where to find it.
+- [references/overview.md](references/overview.md): plugin overview, Quick Start, available workflows, tool catalog, Docs MCP Server guidance, useful links, and license and support notices.
 
 ---
 
@@ -45,6 +60,7 @@ Check whether `VONAGE_APPLICATION_ID` is set to a non-empty string.
 Ask the developer which capabilities they need:
 
 > Which capabilities do you want to enable on your Vonage Application?
+>
 > - **Messages** — Send and receive SMS, WhatsApp, RCS, and MMS
 > - **Voice** — Make and receive phone calls with programmable call flows
 > - **Both** — Enable messages and voice
@@ -63,12 +79,14 @@ On success:
 > ✅ Your Vonage Application has been created!
 >
 > **Next steps — save these values to your environment:**
+>
 > 1. Set `VONAGE_APPLICATION_ID` to: `<returned application ID>`
 > 2. Your private key was returned. Base64-encode it and save it as `VONAGE_PRIVATE_KEY64`.
 >    - Use this tool to encode it: [https://mylight.work/private-key-to-environment-variable](https://mylight.work/private-key-to-environment-variable)
 >    - Or run: `base64 -w 0 private.key` (Linux) / `base64 -i private.key` (macOS)
 
 On failure:
+
 - Invalid name (name is empty or exceeds 200 characters):
   > ❌ Application name must be between 1 and 200 characters. Please provide a valid name.
 - Missing capabilities:
@@ -81,6 +99,7 @@ On failure:
 ### 2.5 List Existing Applications (if requested)
 
 If the developer asks to see existing applications, call `list-applications` and display:
+
 - Application ID
 - Name
 - Enabled capabilities
@@ -108,6 +127,7 @@ Before proceeding to number operations, validate the application-level credentia
 ### 3.2 Validate Base64 Encoding
 
 If `VONAGE_PRIVATE_KEY64` is set, decode it and check:
+
 - It decodes without error
 - The decoded content contains `-----BEGIN PRIVATE KEY-----` or `-----BEGIN RSA PRIVATE KEY-----`
 
@@ -137,12 +157,14 @@ Ask the developer:
 > Which capability do you need? (SMS, Voice, or both)
 
 Call `search-available-numbers` with the specified country code and capability filters. Display up to 10 results showing each number's:
+
 - Phone number
 - Monthly cost
 - Supported features
 
 If no results are returned:
 > ❌ No numbers are currently available in **[country]** with **[capability]** capability. You can:
+>
 > - Try a different country code
 > - Adjust the capability filter (e.g., SMS-only instead of SMS+Voice)
 > - Check [Vonage Dashboard → Numbers](https://dashboard.nexmo.com/buy-numbers) for availability
@@ -158,6 +180,7 @@ On success:
 > ✅ **[number]** has been purchased and added to your account.
 
 On failure:
+
 - Insufficient balance (402):
   > ❌ Your account balance is insufficient to purchase this number. Add credit at [Vonage Dashboard → Billing](https://dashboard.nexmo.com/billing-and-payments).
 - Number no longer available:
@@ -192,11 +215,13 @@ If the developer asks to see all owned numbers, call `list-purchased-numbers` an
 > 🎉 **Your Vonage setup is complete!**
 >
 > **Summary:**
+>
 > - Vonage Application: `[application name]` (`[application ID]`)
 > - Phone number: `[number]` (linked to application)
 >
 > **Your environment variables should be set:**
-> ```
+>
+> ```text
 > VONAGE_API_KEY=<your key>
 > VONAGE_API_SECRET=<your secret>
 > VONAGE_APPLICATION_ID=<your application ID>
@@ -206,6 +231,7 @@ If the developer asks to see all owned numbers, call `list-purchased-numbers` an
 >
 > **Next steps:**
 > The **Vonage Docs MCP Server** is available to help you build. Ask me:
+>
 > - *"Show me a Python example for sending an SMS"*
 > - *"How do I set up an inbound webhook for messages?"*
 > - *"What is an NCCO and how do I use it for voice calls?"*
@@ -218,29 +244,37 @@ If the developer asks to see all owned numbers, call `list-purchased-numbers` an
 Apply these patterns when any MCP tool call fails during this workflow.
 
 ### Authentication Error (401)
+
 > ❌ Authentication failed. Verify that `VONAGE_API_KEY` and `VONAGE_API_SECRET` are correct at [Vonage Dashboard → API Settings](https://dashboard.nexmo.com/settings). If using application-level auth, check that `VONAGE_PRIVATE_KEY64` matches `VONAGE_APPLICATION_ID`.
 
 ### Permission Error (403)
+
 > ❌ Permission denied. Check that the required capability is enabled on your Vonage Application at [Vonage Dashboard → Applications](https://dashboard.nexmo.com/applications). For example, the Messages capability must be enabled to send messages.
 
 ### Validation Error with Field Detail (400)
+
 Identify the specific field that failed. Display:
 > ❌ Validation failed on field **[field name]**: [error message]. Expected format: [expected format per Vonage API docs].
 
 ### Validation Error without Field Detail (400)
+
 > ❌ The request was invalid: [raw error message]. See the [Vonage API reference](https://developer.vonage.com/api) for the expected request format.
 
 ### Rate Limit (429)
+
 > ⏳ Rate limit reached. Please wait **[retry-after duration, default 1 second]** before retrying. Vonage APIs have per-endpoint rate limits — for details, see the [Vonage API documentation](https://developer.vonage.com/api).
 
 ### Insufficient Funds (402)
+
 Call `get-balance` and display the result, then:
 > ❌ Your account has insufficient funds (current balance: **[balance] [currency]**). Add credit at [Vonage Dashboard → Billing](https://dashboard.nexmo.com/billing-and-payments).
 
 ### Server Error or Timeout (5xx)
+
 > ⚠️ The Vonage platform encountered an error. Please retry after 5 seconds. If the issue persists, check the [Vonage API Status page](https://vonageapi.statuspage.io/).
 
 ### Unknown Error
+
 > ❌ An unexpected error occurred (HTTP [status code]): [error message]. See the relevant [Vonage API documentation](https://developer.vonage.com/api) for more information.
 
 ---
@@ -248,6 +282,7 @@ Call `get-balance` and display the result, then:
 ## Documentation and Contextual Help
 
 When a developer asks about a Vonage concept, use the **Docs MCP Server** to retrieve an explanation:
+
 - Query for the concept by name
 - Return no more than 3 sentences explaining it
 - Include a link to the official Vonage documentation page
@@ -255,6 +290,7 @@ When a developer asks about a Vonage concept, use the **Docs MCP Server** to ret
 Concepts to handle this way: Channel, Webhook, NCCO, Private Key, JWT authentication, Vonage Application, Virtual Number, and any other Vonage-specific term.
 
 When a developer asks for code examples:
+
 - Ask for their preferred language if not specified
 - Use the Docs MCP Server to retrieve a language-specific code snippet
 - Do not assume Node.js or any particular SDK

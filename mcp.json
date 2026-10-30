@@ -1,19 +1,17 @@
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
   "mcpServers": {
     "vonage-api": {
+      "type": "stdio",
       "command": "npx",
       "args": ["-y", "@vonage/vonage-mcp-server-api-bindings"],
       "env": {
-        "VONAGE_APPLICATION_ID": "${VONAGE_APPLICATION_ID}",
-        "VONAGE_PRIVATE_KEY64": "${VONAGE_PRIVATE_KEY64}",
-        "VONAGE_API_KEY": "${VONAGE_API_KEY}",
-        "VONAGE_API_SECRET": "${VONAGE_API_SECRET}",
-        "VONAGE_VIRTUAL_NUMBER": "${VONAGE_VIRTUAL_NUMBER}",
-        "VONAGE_WHATSAPP_NUMBER": "${VONAGE_WHATSAPP_NUMBER}",
-        "RCS_SENDER_ID": "${RCS_SENDER_ID}"
+        "DOTENV_CONFIG_PATH": "${PLUGIN_DATA}/.env",
+        "DOTENV_CONFIG_QUIET": "true"
       }
     },
     "vonage-docs": {
+      "type": "streamable-http",
       "url": "https://documentation-mcp.vonage.dev/mcp"
     }
   }
