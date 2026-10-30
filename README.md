@@ -15,7 +15,6 @@ An [Agent Plugin](https://github.com/agentplugins/agent-plugins-spec/blob/main/s
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Migrating from the Kiro power](#migrating-from-the-kiro-power)
 - [Workflows](#workflows)
 - [Available Tools](#available-tools)
 - [Documentation](#documentation)
@@ -75,7 +74,7 @@ The plugin follows the Agent Plugins 1.0.0 layout:
    git clone https://github.com/Vonage/vonage-kiro-power.git
    ```
 
-2. Install the plugin in your agent client from the cloned folder. Your client discovers the skills in `skills/` and the MCP servers in `mcp.json`. 
+2. Install the plugin in your agent client from the cloned folder. Your client discovers the skills in `skills/` and the MCP servers in `mcp.json`.
 
    - For example, in Kiro, open the Powers panel, add a custom power, and choose **Import power from a folder** (pick the cloned folder) or **Import power from GitHub** (paste the repository URL). See [Install powers](https://kiro.dev/docs/powers/installation/) for the current steps.
 
@@ -86,7 +85,7 @@ The plugin follows the Agent Plugins 1.0.0 layout:
    VONAGE_API_SECRET=your_api_secret_here
    ```
 
-   For a template, see `.env.example`. Find both values at [Vonage Dashboard → API Settings](https://dashboard.nexmo.com/settings). See [Configuration](#configuration) for where the file is in your client and for the full list of variables.
+   For a template, see `.env.example`. Find both values at [Vonage Dashboard → API Settings](https://dashboard.nexmo.com/settings).
 
 4. Restart your agent client so the `vonage-api` server starts with the new values.
 
