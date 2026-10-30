@@ -1,4 +1,4 @@
-# Environment files — credentials go here, never in mcp.json
+# Local environment files are excluded from git
 .env
 .env.*
 !.env.example

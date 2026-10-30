@@ -1,3 +1,4 @@
+<!-- markdownlint-disable-next-line MD041 -->
 ## Summary
 
 <!-- What changed and why? -->
@@ -9,14 +10,14 @@
 ## Type of change
 
 - [ ] Bug fix
-- [ ] New workflow or steering file
+- [ ] New workflow or skill
 - [ ] Tool addition or update
 - [ ] Documentation update
 - [ ] Maintenance / chore
 
 ## Testing
 
-<!-- Describe how you tested this change in Kiro. Include the prompt(s) you used. -->
+<!-- Describe how you tested this change in your agent client. Include the prompt(s) you used. -->
 
 ## Checklist
 
@@ -24,4 +25,4 @@
 - [ ] My branch is up to date with `main`
 - [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
 - [ ] I have not committed any real API keys or credentials
-- [ ] I have tested the affected workflow end-to-end in Kiro
+- [ ] I have tested the affected workflow end-to-end in an agent client

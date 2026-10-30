@@ -14,7 +14,7 @@ This project handles Vonage API credentials. If you discover a security vulnerab
 
 ### How to report
 
-Use [GitHub's private vulnerability reporting](https://github.com/Vonage/vonage-kiro-power/security/advisories/new) to submit a report. If you are unable to use that feature, email **devrel@vonage.com** with the subject line `[SECURITY] vonage-kiro-power`.
+Use [GitHub's private vulnerability reporting](https://github.com/Vonage/vonage-kiro-power/security/advisories/new) to submit a report. If you are unable to use that feature, email **<devrel@vonage.com>** with the subject line `[SECURITY] vonage-kiro-power`.
 
 Please include:
 

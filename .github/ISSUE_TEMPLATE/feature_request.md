@@ -12,7 +12,7 @@ assignees: ''
 
 ## What are you proposing?
 
-<!-- Describe the new workflow, steering file, or tool you have in mind. -->
+<!-- Describe the new workflow, skill, or tool you have in mind. -->
 
 ## Why would this be useful to other Vonage developers?
 
